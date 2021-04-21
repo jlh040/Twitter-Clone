@@ -213,7 +213,22 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    return render_template('/users/edit.html')
+    form = UserEditForm(obj=g.user)
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    if form.validate_on_submit():
+        if g.user.authenticate(form.username.data, form.password.data):
+            form.populate_obj(g.user)
+            db.session.commit()
+            return redirect(f'/users/{g.user.id}')
+        else:
+            flash('Invalid credentials!', 'danger')
+            return redirect('/')
+
+    return render_template('/users/edit.html', form=form)
 
 
 @app.route('/users/delete', methods=["POST"])

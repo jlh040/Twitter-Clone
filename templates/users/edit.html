@@ -20,7 +20,7 @@
           {% for error in form.password.errors %}
             <span class="text-danger">
             {{ error }}
-          </span>
+            </span>
           {% endfor %}
         {% endif %}
         {{ form.password(placeholder="Enter your password to confirm", class="form-control") }}
