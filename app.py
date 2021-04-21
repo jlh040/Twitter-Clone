@@ -318,9 +318,9 @@ def homepage():
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users
     """
-    ids_of_followed_users = [user.id for user in g.user.following]
 
     if g.user:
+        ids_of_followed_users = [user.id for user in g.user.following]
         messages = (Message
                     .query
                     .filter(Message.user_id.in_(ids_of_followed_users) | (Message.user_id == g.user.id))
