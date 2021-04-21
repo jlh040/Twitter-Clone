@@ -26,7 +26,6 @@ class UserEditForm(FlaskForm):
     bio = StringField('Bio')
 
 
-
 class LoginForm(FlaskForm):
     """Login form."""
 
