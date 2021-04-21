@@ -309,7 +309,24 @@ def messages_destroy(message_id):
 ##############################################################################
 # 'Like' routes
 
+@app.route('/users/add_like/<int:msg_id>', methods=['GET', 'POST'])
+def add_like(msg_id):
+    """Make this message a liked message for the logged in user."""
 
+    if not g.user:
+        flash('Log in to like posts!!', 'danger')
+        redirect('/')
+
+    msg = Message.query.get(msg_id)
+    
+    if msg.user_id == g.user.id:
+        flash('You cant like your own messages!', 'danger')
+        return redirect('/')
+    else:
+        g.user.likes.append(msg)
+        db.session.commit()
+
+    return redirect('/')
 
 
 
