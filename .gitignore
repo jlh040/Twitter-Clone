@@ -1,0 +1,4 @@
+venv/
+log_of_bugs.md
+__pycache__/
+.vscode/
