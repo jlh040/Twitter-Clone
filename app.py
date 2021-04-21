@@ -323,12 +323,30 @@ def add_like(msg_id):
         flash('You cant like your own messages!', 'danger')
         return redirect('/')
     else:
+        flash('Added like!', 'success')
         g.user.likes.append(msg)
         db.session.commit()
 
     return redirect('/')
 
 @app.route('/users/remove_like/<int:msg_id>', methods=['POST'])
+def remove_like(msg_id):
+    """Remove this message from the logged in user's liked messages."""
+
+    if not g.user:
+        flash('Not authorized to do this!', 'danger')
+        return redirect('/')
+    
+    message = Message.query.get(msg_id)
+    flash('Removed like!')
+    g.user.likes.remove(message)
+    db.session.commit()
+    
+    
+    return redirect('/')
+    
+    
+
 
 
 

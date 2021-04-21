@@ -50,7 +50,7 @@
                 <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
                 <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
                 {% if msg in g.user.likes %}
-                <form class="d-inline" action="">
+                <form class="d-inline unlike-form" action="/users/remove_like/{{ msg.id }}" method="POST">
                   <button>
                     <i class="fas fa-star"></i>
                   </button>

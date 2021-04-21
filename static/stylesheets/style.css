@@ -532,6 +532,12 @@ p.card-bio {
   color: red;
 }
 
+.unlike-form {
+  position: relative;
+  left: 4px;
+  z-index: 1;
+}
+
 /* ================================ 404 page */
 
 .message-404 {
