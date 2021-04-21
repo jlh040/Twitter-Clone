@@ -130,6 +130,7 @@ def logout():
 ##############################################################################
 # General user routes:
 
+
 @app.route('/users')
 def list_users():
     """Page with listing of users.
@@ -261,6 +262,7 @@ def delete_user():
 ##############################################################################
 # Messages routes:
 
+
 @app.route('/messages/new', methods=["GET", "POST"])
 def messages_add():
     """Add a message:
@@ -306,8 +308,10 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+
 ##############################################################################
 # 'Like' routes
+
 
 @app.route('/users/add_like/<int:msg_id>', methods=['POST'])
 def add_like(msg_id):
@@ -344,17 +348,23 @@ def remove_like(msg_id):
     
     
     return redirect('/')
-    
-    
 
+@app.route('/users/show_likes/<int:user_id>', methods=['GET'])
+def show_users_likes(user_id):
+    """Show all the likes for a user."""
 
-
-
-
+    if g.user:
+        user = User.query.get(user_id)
+        users_likes = user.likes
+        return render_template('/users/likes.html', user=user)
+    else:
+        flash('Not authorized to view this!', 'danger')
+        return redirect('/')
 
 
 ##############################################################################
 # Homepage and error pages
+
 
 @app.route('/')
 def homepage():
