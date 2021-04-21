@@ -378,7 +378,8 @@ def homepage():
         ids_of_followed_users = [user.id for user in g.user.following]
         messages = (Message
                     .query
-                    .filter(Message.user_id.in_(ids_of_followed_users) | (Message.user_id == g.user.id))
+                    .filter(Message.user_id.in_(ids_of_followed_users) | 
+                    (Message.user_id == g.user.id))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
