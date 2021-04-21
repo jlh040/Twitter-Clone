@@ -53,7 +53,7 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 def update_user_data(form, user):
-    """Update's a users information, minus the password."""
+    """Updates a user's information, minus the password."""
     user.username = form.username.data
     user.email = form.email.data
     user.image_url = form.image_url.data
@@ -306,10 +306,18 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+##############################################################################
+# 'Like' routes
+
+
+
+
+
+
+
 
 ##############################################################################
 # Homepage and error pages
-
 
 @app.route('/')
 def homepage():
