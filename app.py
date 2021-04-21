@@ -309,7 +309,7 @@ def messages_destroy(message_id):
 ##############################################################################
 # 'Like' routes
 
-@app.route('/users/add_like/<int:msg_id>', methods=['GET', 'POST'])
+@app.route('/users/add_like/<int:msg_id>', methods=['POST'])
 def add_like(msg_id):
     """Make this message a liked message for the logged in user."""
 
@@ -327,6 +327,8 @@ def add_like(msg_id):
         db.session.commit()
 
     return redirect('/')
+
+@app.route('/users/remove_like/<int:msg_id>', methods=['POST'])
 
 
 
