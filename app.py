@@ -239,7 +239,7 @@ def profile():
             flash('Invalid credentials!', 'danger')
             return redirect('/')
 
-    return render_template('/users/edit.html', form=form)
+    return render_template('/users/edit.html', user=g.user, form=form)
 
 
 @app.route('/users/delete', methods=["POST"])
