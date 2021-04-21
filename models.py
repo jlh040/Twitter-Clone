@@ -137,12 +137,13 @@ class User(db.Model):
         Hashes password and adds user to system.
         """
 
-        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+        hashed_pwd = bcrypt.generate_password_hash(password)
+        hashed_utf8 = hashed_pwd.decode('utf8')
 
         user = User(
             username=username,
             email=email,
-            password=hashed_pwd,
+            password=hashed_utf8,
             image_url=image_url,
         )
 

@@ -52,6 +52,15 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+def update_user_data(form, user):
+    """Update's a users information, minus the password."""
+    user.username = form.username.data
+    user.email = form.email.data
+    user.image_url = form.image_url.data
+    user.header_image_url = form.header_image_url.data
+    user.bio = form.bio.data
+    user.location = form.location.data
+
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -221,8 +230,10 @@ def profile():
     
     if form.validate_on_submit():
         if g.user.authenticate(form.username.data, form.password.data):
-            form.populate_obj(g.user)
+            update_user_data(form, g.user)
+            db.session.add(g.user)
             db.session.commit()
+            flash('Edit successful!', 'success')
             return redirect(f'/users/{g.user.id}')
         else:
             flash('Invalid credentials!', 'danger')
