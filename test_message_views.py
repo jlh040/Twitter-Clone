@@ -157,6 +157,34 @@ class MessageViewTestCase(TestCase):
             resp2 = c.get(f'/users/{user2.id}/followers')
             html = resp2.get_data(as_text=True)
             self.assertIn(f'<p>@{self.testuser.username}</p>', html)
+    
+    def see_following_logged_in(self):
+        """Can you see who a user is following when logged in?"""
+        with self.testclient as c:
+            with c.session_transaction as sess:
+                sess[CURR_USER_KEY] = self.testclient.id
+            
+            # Make another user
+            db.session.commit(User.signup(
+                username='diesel11',
+                email="abc@gmail.com",
+                password="truck",
+                image="random.jpg"
+            ))
+            
+            # Have this user follow you
+            user2 = User.query.filter_by(username = 'diesel11')
+            self.testuser.followers.append(user2)
+            db.session.commit()
+            
+            # Check the status code
+            resp = c.get(f'/users/{user2.id}/following')
+            self.assertEqual(resp.status_code, 200)
+
+            # Check that you can see who this user is following
+            resp2 = c.get(f'/users/{user2.id}/following')
+            html = resp2.get_data(as_text=True)
+            self.assertIn(f'<p>@{self.testuser.username}</p>', html)
 
 
             
