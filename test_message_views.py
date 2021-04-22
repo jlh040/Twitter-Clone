@@ -197,7 +197,22 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 302)
 
             # Do we see the unauthorized message?
-            resp2 = c.get(f'/users/{random_id}/followers')
+            resp2 = c.get(f'/users/{random_id}/followers', follow_redirects=True)
+            html = resp2.get_data(as_text=True)
+            self.assertIn('Access unauthorized', html)
+    
+    def see_following_nli(self):
+        """Are you prohibited from seeing who a user is following when not logged in?"""
+
+        with self.client as c:
+            random_id = 673
+            resp = c.get(f'/users/{random_id}/following')
+
+            # Are we redirected?
+            self.assertEquals(resp.status_code, 302)
+
+            # Do we see the unauthorized message?
+            resp2 = c.get(f'/users/{random_id}/following', follow_redirects=True)
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
 
