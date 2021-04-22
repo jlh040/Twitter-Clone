@@ -151,5 +151,15 @@ class MessageViewTestCase(TestCase):
             self.assertIn('class="message-area likes-area">', html)
 
 
-    # def see_likes_when_logged_out(self):
-    #     """Can you see a user's likes when logged out?"""
+    def see_likes_when_logged_out(self):
+        """Are we prohibited from the likes page when logged out?"""
+
+        with self.client as c:
+            resp = c.get(f'/users/show_likes/{self.testuser.id}')
+
+            # Do we get a redirect response status code?
+            self.assertEqual(resp.status_code, 302)
+
+            # Do we see the homepage?
+            html = resp.get_data(as_text=True)
+            self.assertIn('<h4>New to Warbler?</h4>', html)
