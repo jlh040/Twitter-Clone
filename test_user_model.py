@@ -30,7 +30,7 @@ db.create_all()
 
 
 class UserModelTestCase(TestCase):
-    """Test views for messages."""
+    """Test functionality for the user model."""
 
     def setUp(self):
         """Create test client, add sample data."""
@@ -56,3 +56,20 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(u.messages), 0)
         self.assertEqual(len(u.followers), 0)
+
+    def test_user_defaults(self):
+        """Do our default values show up?"""
+
+        user = User(
+            username="some_guy11",
+            email="abc123@gmail.com",
+            password="blub55"
+        )
+
+        db.session.add(u)
+        db.session.commit()
+
+        self.assertEqual(user.image_url, '/static/images/default-pic.png')
+        self.assertEqual(user.header_image_url, '/static/images/warbler-hero.jpg')
+        self.assertEqual(user.bio, None)
+        self.assertEqual(user.location, None)
