@@ -32,6 +32,9 @@ db.create_all()
 
 app.config['WTF_CSRF_ENABLED'] = False
 
+# Let Flask errors be real errors, not HTML pages with error info
+app.config['Testing'] = True
+
 
 class MessageViewTestCase(TestCase):
     """Test views for messages."""
@@ -52,7 +55,7 @@ class MessageViewTestCase(TestCase):
         db.session.commit()
 
     def test_add_message(self):
-        """Can use add a message?"""
+        """Can the user add a message?"""
 
         # Since we need to change the session to mimic logging in,
         # we need to use the changing-session trick:
@@ -71,3 +74,24 @@ class MessageViewTestCase(TestCase):
 
             msg = Message.query.one()
             self.assertEqual(msg.text, "Hello")
+
+            # Make sure the post shows up on our website
+            resp2 = c.get('/')
+            html = resp2.get_data(as_text=True)
+            self.assertIn('<p>Hello</p>', html)
+    
+    def test_add_message_nli(self):
+        """When logged out, is the user prohibited from adding a message?"""
+
+        with self.client as c:
+            resp = c.post('/messages/new', data={'text': 'I\'m not logged in'})
+
+            # Are we redirect?
+            self.assertEqual(resp.status_code, 302)
+
+            # Are we getting an error message?
+            resp2 = c.post('/messages/new', data={'text': 'I\'m not logged in'}, follow_redirects=True)
+            html = resp2.get_data(as_text=True)
+            self.assertIn('Access unauthorized', html)
+
+
