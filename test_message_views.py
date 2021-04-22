@@ -7,6 +7,7 @@
 
 import os
 from unittest import TestCase
+from flask import g
 
 
 from models import db, connect_db, Message, User
@@ -221,27 +222,5 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
     
-    # def test_add_message_as_diff_user(self):
-    #     """Are we prohibited from adding a message as a different user?"""
-
-    #     # Make another user
-    #     user2 = User.signup(
-    #         username='ice_cream55',
-    #         email="big_bog@gmail.com",
-    #         password="leandor",
-    #         image_url="random.jpg"
-    #     )
-    #     db.session.commit()
-        
-    #     # Try to change the global object to hold this user
-    #     user2 = User.query.filter(User.username == 'ice_cream55')
-    #     g.user = user2
-    #     self.assertEqual(1, 2)
-        
-
-
-            
-
-
-
-
+    
+    # Test 'like' routes at a later date, also, see notes.md
