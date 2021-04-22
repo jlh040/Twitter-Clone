@@ -86,12 +86,32 @@ class MessageViewTestCase(TestCase):
         with self.client as c:
             resp = c.post('/messages/new', data={'text': 'I\'m not logged in'})
 
-            # Are we redirect?
+            # Are we redirected?
             self.assertEqual(resp.status_code, 302)
 
             # Are we getting an error message?
             resp2 = c.post('/messages/new', data={'text': 'I\'m not logged in'}, follow_redirects=True)
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
+    
+    def test_delete_message(self):
+        """When logged in, can you delete a message."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+            
+            # Add a message
+            resp = c.post('/messages/new', data={'text': 'This is a new message'})
+
+            # Check that the message was added
+            self.assertEqual(Message.query.count(), 1)
+
+            # Delete the message
+            msg_id = Message.query.first().id
+            resp2 = c.post(f'/messages/{msg_id}/delete')
+
+            #Check that the message is gone
+            self.assertEqual(Message.query.count(), 0)
 
 
