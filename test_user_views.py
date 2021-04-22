@@ -121,7 +121,7 @@ class UserViewTestCase(TestCase):
             self.assertIn('Access unauthorized', html)
     
     def see_logged_in_homepage(self):
-        """See the homepage when logged in."""
+        """See the logged in homepage when logged in."""
 
         with self.client as c:
             with c.session_transaction() as sess:
@@ -135,4 +135,18 @@ class UserViewTestCase(TestCase):
 
             # Do we see the homepage?
             self.assertIn('id="home-aside">', html)
+    
+    def see_logged_out_homepage(self):
+        """Do we see the 'anonymous' homepage when logged out?"""
+
+        with self.client as c:
+            resp = c.get('/')
+            html = resp.get_data(as_text=True)
+
+            # Do we get a 200 status code?
+            self.assertEqual(resp.status_code, 200)
+
+            # Do we actually see the homepage?
+            self.assertIn('<h4>New to Warbler?</h4>', html)
+
 
