@@ -107,6 +107,9 @@ class MessageViewTestCase(TestCase):
             # Add a message
             resp = c.post('/messages/new', data={'text': 'This is a new message'})
 
+            # Check the reponse status code
+            self.assertEqual(resp.status_code, 302)
+
             # Check that the message was added
             self.assertEqual(Message.query.count(), 1)
 
@@ -222,5 +225,5 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
     
-    
+
     # Test 'like' routes at a later date, also, see notes.md
