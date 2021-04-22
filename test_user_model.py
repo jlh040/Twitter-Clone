@@ -66,10 +66,23 @@ class UserModelTestCase(TestCase):
             password="blub55"
         )
 
-        db.session.add(u)
+        db.session.add(user)
         db.session.commit()
 
         self.assertEqual(user.image_url, '/static/images/default-pic.png')
         self.assertEqual(user.header_image_url, '/static/images/warbler-hero.jpg')
         self.assertEqual(user.bio, None)
         self.assertEqual(user.location, None)
+    
+    def test_repr(self):
+        """Does the repr method return a representation of a user?"""
+
+        user = User(
+            username="mike11",
+            email="someguy44@mail.com",
+            password="1234k"
+        )
+        db.session.add(user)
+        db.session.commit()
+
+        self.assertEqual(str(user), f'<User #{user.id}: {user.username}, {user.email}>')
