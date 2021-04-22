@@ -134,12 +134,12 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
     
-    def see_likes_when_logged_in(self):
+    def test_see_likes_when_logged_in(self):
         """Can you see the page which shows a user's likes when logged in?"""
 
         with self.client as c:
             with c.session_transaction() as sess:
-                sess[CURR_USER_KEY] = self.testuser
+                sess[CURR_USER_KEY] = self.testuser.id
             
             resp = c.get(f'/users/show_likes/{self.testuser.id}')
 
@@ -148,17 +148,17 @@ class MessageViewTestCase(TestCase):
 
             # Can we see the page which shows a user's likes?
             html = resp.get_data(as_text=True)
-            self.assertIn('class="message-area likes-area">', html)
+            self.assertIn('class="list-group likes-area"', html)
 
 
-    def see_likes_when_logged_out(self):
+    def test_see_likes_when_logged_out(self):
         """Are we prohibited from the likes page when logged out?"""
 
         with self.client as c:
-            resp = c.get(f'/users/show_likes/{self.testuser.id}')
+            resp = c.get(f'/users/show_likes/{self.testuser.id}', follow_redirects=True)
 
             # Do we get a redirect response status code?
-            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.status_code, 200)
 
             # Do we see the homepage?
             html = resp.get_data(as_text=True)
