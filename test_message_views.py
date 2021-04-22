@@ -8,6 +8,7 @@
 import os
 from unittest import TestCase
 
+
 from models import db, connect_db, Message, User
 
 # BEFORE we import our app, let's set an environmental variable
@@ -20,7 +21,7 @@ os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
 
 # Now we can import app
 
-from app import app, CURR_USER_KEY
+from app import app, CURR_USER_KEY, do_logout
 
 # Create our tables (we do this here, so we only create the tables
 # once for all tests --- in each test, we'll delete the data
@@ -113,5 +114,26 @@ class MessageViewTestCase(TestCase):
 
             #Check that the message is gone
             self.assertEqual(Message.query.count(), 0)
+    
+    def test_delete_message_nli(self):
+        """When not logged in, are you prohibited from deleting a message?"""
+
+        with self.client as c:
+            random_num = 5
+            resp = c.post(f'/messages/{random_num}/delete')
+
+            # Do we get redirected?
+            self.assertEqual(resp.status_code, 302)
+
+            # Do we get an error message?
+            resp2 = c.post(f'/messages/{random_num}/delete', follow_redirects=True)
+            html = resp2.get_data(as_text=True)
+            self.assertIn('Access unauthorized', html)
+            
+            
+
+            
+
+
 
 
