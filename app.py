@@ -331,7 +331,7 @@ def add_like(msg_id):
         g.user.likes.append(msg)
         db.session.commit()
 
-    return redirect('/')
+    return redirect(request.referrer)
 
 @app.route('/users/remove_like/<int:msg_id>', methods=['POST'])
 def remove_like(msg_id):
@@ -342,7 +342,7 @@ def remove_like(msg_id):
         return redirect('/')
     
     message = Message.query.get(msg_id)
-    flash('Removed like!')
+    flash('Removed like!', 'info')
     g.user.likes.remove(message)
     db.session.commit()
     

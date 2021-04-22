@@ -134,6 +134,20 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
     
+    def see_likes_when_logged_in(self):
+        """Can you see a user's likes when logged in?"""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser
+            
+            resp = c.get(f'/users/show_likes/{self.testuser.id}')
+
+            # Do we get an OK status code?
+            self.assertEqual(resp.status_code, 200)
+
+            # Can we see a users likes?
 
 
-    # Test 'like' routes at a later date, also, see notes.md
+    # def see_likes_when_logged_out(self):
+    #     """Can you see a user's likes when logged out?"""
