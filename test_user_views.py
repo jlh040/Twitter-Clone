@@ -1,14 +1,14 @@
 """User View tests."""
 
 # Set the database url before we import app
+import os
 os.environ['DATABASE_URL'] = 'postgresql:///warbler-test'
 
 from app import app, CURR_USER_KEY
 from models import db, connect_db, User, Message
 from unittest import TestCase
-import os
 
-app.config['WTF_CSRF_ENABLED'] = True
+app.config['WTF_CSRF_ENABLED'] = False
 app.config['TESTING'] = True
 
 class UserViewTestCase(TestCase):
@@ -119,4 +119,20 @@ class UserViewTestCase(TestCase):
             resp2 = c.get(f'/users/{random_id}/following', follow_redirects=True)
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
+    
+    def see_logged_in_homepage(self):
+        """See the homepage when logged in."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+            
+            resp = c.get('/')
+            html = resp.get_data(as_text="True")
+
+            # Do we get a 200 status code?
+            self.assertEqual(resp.status_code, 200)
+
+            # Do we see the homepage?
+            self.assertIn('id="home-aside">', html)
 
