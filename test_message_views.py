@@ -54,6 +54,7 @@ class MessageViewTestCase(TestCase):
                                     image_url=None)
 
         db.session.commit()
+    
 
     def test_add_message(self):
         """Can the user add a message?"""
@@ -130,22 +131,24 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
             
-    def see_followers_logged_in(self):
+    def test_see_followers_logged_in(self):
         """Can you see followers of other users when logged in?"""
-        with self.testclient as c:
-            with c.session_transaction as sess:
-                sess[CURR_USER_KEY] = self.testclient.id
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
             
             # Make another user
-            db.session.commit(User.signup(
+            user2 = User.signup(
                 username='diesel11',
                 email="abc@gmail.com",
                 password="truck",
-                image="random.jpg"
-            ))
-            
+                image_url="random.jpg"
+            )
+
+            # Re-add user to session
+            db.session.add(self.testuser)
+
             # Follow this user
-            user2 = User.query.filter_by(username = 'diesel11')
             self.testuser.following.append(user2)
             db.session.commit()
             
@@ -158,22 +161,24 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn(f'<p>@{self.testuser.username}</p>', html)
     
-    def see_following_logged_in(self):
+    def test_see_following_logged_in(self):
         """Can you see who a user is following when logged in?"""
-        with self.testclient as c:
-            with c.session_transaction as sess:
-                sess[CURR_USER_KEY] = self.testclient.id
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
             
             # Make another user
-            db.session.commit(User.signup(
+            user2 = User.signup(
                 username='diesel11',
                 email="abc@gmail.com",
                 password="truck",
-                image="random.jpg"
-            ))
+                image_url="random.jpg"
+            )
+
+            # Re-add user to session
+            db.session.add(self.testuser)
             
             # Have this user follow you
-            user2 = User.query.filter_by(username = 'diesel11')
             self.testuser.followers.append(user2)
             db.session.commit()
             
@@ -186,7 +191,7 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn(f'<p>@{self.testuser.username}</p>', html)
     
-    def see_followers_nli(self):
+    def test_see_followers_nli(self):
         """Are you prohibited from seeing a user's followers when not logged in?"""
 
         with self.client as c:
@@ -201,7 +206,7 @@ class MessageViewTestCase(TestCase):
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
     
-    def see_following_nli(self):
+    def test_see_following_nli(self):
         """Are you prohibited from seeing who a user is following when not logged in?"""
 
         with self.client as c:
@@ -209,12 +214,30 @@ class MessageViewTestCase(TestCase):
             resp = c.get(f'/users/{random_id}/following')
 
             # Are we redirected?
-            self.assertEquals(resp.status_code, 302)
+            self.assertEqual(resp.status_code, 302)
 
             # Do we see the unauthorized message?
             resp2 = c.get(f'/users/{random_id}/following', follow_redirects=True)
             html = resp2.get_data(as_text=True)
             self.assertIn('Access unauthorized', html)
+    
+    # def test_add_message_as_diff_user(self):
+    #     """Are we prohibited from adding a message as a different user?"""
+
+    #     # Make another user
+    #     user2 = User.signup(
+    #         username='ice_cream55',
+    #         email="big_bog@gmail.com",
+    #         password="leandor",
+    #         image_url="random.jpg"
+    #     )
+    #     db.session.commit()
+        
+    #     # Try to change the global object to hold this user
+    #     user2 = User.query.filter(User.username == 'ice_cream55')
+    #     g.user = user2
+    #     self.assertEqual(1, 2)
+        
 
 
             
