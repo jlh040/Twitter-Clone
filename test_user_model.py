@@ -261,10 +261,4 @@ class UserModelTestCase(TestCase):
         db.session.commit()
 
         self.assertFalse(user.authenticate(username='some_username', password='some_easy_passs'))
-
-
-
-
-
-
         
