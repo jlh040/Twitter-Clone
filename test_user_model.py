@@ -170,3 +170,17 @@ class UserModelTestCase(TestCase):
         db.session.commit()
 
         self.assertFalse(user1.is_followed_by(user2))
+    
+    def test_sign_up(self):
+        """Does signup successfully create a user if their credentials are valid?"""
+
+        user_1 = User.signup(
+            username="billybob",
+            password="thornton",
+            email="badnewsbears",
+            image_url=None
+        )
+
+        self.assertTrue(user_1)
+
+        
