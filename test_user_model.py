@@ -150,3 +150,23 @@ class UserModelTestCase(TestCase):
         user1.followers.append(user2)
 
         self.assertTrue(user1.is_followed_by(user2))
+
+    def test_is_not_followed_by(self):
+        """Does is_followed_by detect when a user is not followed by another user?"""
+
+        user1 = User(
+            username="user1",
+            email="hotwow@mail.com",
+            password="bub1"
+        )
+
+        user2 = User(
+            username="user2",
+            email="wowbot@mail.com",
+            password="fraek"
+        )
+
+        db.session.add_all([user1, user2])
+        db.session.commit()
+
+        self.assertFalse(user1.is_followed_by(user2))
