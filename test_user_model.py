@@ -110,7 +110,7 @@ class UserModelTestCase(TestCase):
         self.assertTrue(user2.is_following(user1))
 
     def test_is_not_following(self):
-        """Does is_following detect when a user follows another user?"""
+        """Does is_following work when a user is not following another user?"""
 
         user1 = User(
             username="user1",
@@ -128,3 +128,25 @@ class UserModelTestCase(TestCase):
         db.session.commit()
 
         self.assertFalse(user2.is_following(user1))
+    
+    def test_is_followed_by(self):
+        """Does is_followed_by detect when a user is followed by another user?"""
+
+        user1 = User(
+            username="user1",
+            email="hotwow@mail.com",
+            password="bub1"
+        )
+
+        user2 = User(
+            username="user2",
+            email="wowbot@mail.com",
+            password="fraek"
+        )
+
+        db.session.add_all([user1, user2])
+        db.session.commit()
+
+        user1.followers.append(user2)
+
+        self.assertTrue(user1.is_followed_by(user2))
