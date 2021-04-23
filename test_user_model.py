@@ -34,15 +34,14 @@ class UserModelTestCase(TestCase):
     """Test functionality for the user model."""
 
     def setUp(self):
-        """Create test client, add sample data."""
+        """Delete any leftover sample data."""
 
         User.query.delete()
         Message.query.delete()
         Follows.query.delete()
-
-        self.client = app.test_client()
     
     def tearDown(self):
+        """Clear the session."""
         db.session.rollback()
     
 
