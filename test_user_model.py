@@ -247,7 +247,20 @@ class UserModelTestCase(TestCase):
 
         self.assertFalse(User.authenticate(username='Ricky677', password='jaketheguyroberts'))
 
+    def test_user_authenticate_password_fail(self):
+        """Does authenticate fail when an invalid password is given?"""
 
+        user = User.signup(
+            username="some_username",
+            password="some_easy_pass",
+            email="jimbob@bob.com",
+            image_url=None
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        self.assertFalse(user.authenticate(username='some_username', password='some_easy_passs'))
 
 
 
