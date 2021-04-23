@@ -200,7 +200,10 @@ class Message(db.Model):
 
     user = db.relationship('User')
 
-    # add users_who_liked = db.relationship(....
+    def __repr__(self):
+        """Create a better representation of the model."""
+        return f'<Message: {self.id}, user_id: {self.user_id}, timestamp: {self.timestamp}>'
+
 
 
 def connect_db(app):
