@@ -1,0 +1,16 @@
+- This is a Twitter clone that I have both debugged, and added functionality to. Working on this project allowed me to get practice working with a relatively large codebase.
+- I have added tests for all of the important functionality of the models and view functions.
+- Note that this Twitter clone includes all of the main functionality of Twitter, including: registering, logging in/out, making a tweet (warble), liking a tweet, deleting your own tweet, viewing all of your liked tweets, following/unfollowing users, seeing who is following a user, seeing who a user is following, and deleting your own account.
+- See my [commit history](https://github.com/jlh040/Twitter-Clone/commits/master) to find out exactly what I did to make this a fully functioning application.
+- Technologies Used:
+  - Python
+  - Flask
+  - Bootstrap
+  - Flask-SQLAlchemy
+  - Flask-WTForms
+  - Flask-Bcrypt
+  - unittest
+  - HTML
+  - CSS
+  - Font Awesome
+
