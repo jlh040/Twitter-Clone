@@ -217,7 +217,21 @@ class UserModelTestCase(TestCase):
             user_3 = User.signup(username="hello56")
         except TypeError as err:
             self.assertIsInstance(err, TypeError)
-            
+    
+    def test_user_authenticate_success(self):
+        """Does authenticate successfully return a user given valid credentials?"""
+
+        user1 = User.signup(
+            username="bobby",
+            password="robby7673",
+            email="some_guy87@gmail.com",
+            image_url=None
+        )
+        db.session.add(user1)
+        db.session.commit()
+
+        self.assertEqual(user1.authenticate(username='bobby', password='robby7673'), user1)
+        
 
 
 
