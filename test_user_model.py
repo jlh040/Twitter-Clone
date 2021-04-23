@@ -9,6 +9,7 @@ import os
 from unittest import TestCase
 
 from models import db, User, Message, Follows
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -40,6 +41,10 @@ class UserModelTestCase(TestCase):
         Follows.query.delete()
 
         self.client = app.test_client()
+    
+    def tearDown(self):
+        db.session.rollback()
+    
 
     def test_user_model(self):
         """Does basic model work?"""
@@ -177,10 +182,44 @@ class UserModelTestCase(TestCase):
         user_1 = User.signup(
             username="billybob",
             password="thornton",
-            email="badnewsbears",
+            email="badnewsbears@mail.com",
             image_url=None
         )
 
         self.assertTrue(user_1)
+    
+    def test_signup_invalid_creds(self):
+        """Does signup fail to create a user if any validations fail?"""
+
+        user_1 = User.signup(
+            username="Some_guy_some_where234",
+            password="whoami",
+            email="badnewsbears@lipwip.com",
+            image_url=None
+        )
+
+        user_2 = User.signup(
+            username="Some_guy_some_where234",
+            password="thisisanewone",
+            email="whydo@gmail.com",
+            image_url=None
+        )
+
+        # Does a duplicate username cause a failure?
+        try:
+            db.session.add_all([user_1, user_2])
+            db.session.commit()
+        except IntegrityError as err:
+            self.assertIsInstance(err, IntegrityError)
+        
+        # Do empty fields cause a failure?
+        try:
+            user_3 = User.signup(username="hello56")
+        except TypeError as err:
+            self.assertIsInstance(err, TypeError)
+            
+
+
+
 
         
