@@ -156,3 +156,15 @@ class UserViewTestCase(TestCase):
 
             # Do we get an OK response code
             self.assertEqual(resp.status_code, 200)
+    
+    def test_see_login_page(self):
+        """Can we see the login page?"""
+        with self.client as c:
+            resp = c.get('/login')
+            html = resp.get_data(as_text=True)
+
+            # Do we get an OK response status code?
+            self.assertEqual(resp.status_code, 200)
+
+            # Do we actually see the page to login?
+            self.assertIn('<h2 class="join-message">Welcome back.</h2>', html)
